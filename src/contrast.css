@@ -8,8 +8,8 @@
 body.light .sidebar{background:#edf4fb}body.light .categories details{background:#fff}body.light .categories details>div{background:#f4f8fc}body.light .categories summary b{color:#1d3043}body.light .categories summary small,body.light .categories details>div button{color:#536a80}body.light .article-head>p,body.light article section>p{color:#40546a}body.light .english-term{color:#075d9b}
 
 /* Dedicated light palette — intentionally darker than the dark-theme accents */
-body.light{--blue:#075f9f;--lav:#6541b5;--text:#17283a;--text2:#354b61;--muted:#5b7086;--border:#b7c8d8;--soft:#d9e9f7;background:#eef4f9;color:#17283a}
-body.light .shell>main{background:#eef4f9}
+body.light{--bg:#dce7f0;--side:#cfdeea;--surface:#f9fbfd;--raised:#e5edf4;--blue:#075990;--lav:#5f3ca8;--text:#10263a;--text2:#29445c;--muted:#455f77;--border:#91a9bc;--soft:#cbddeb;background:#dce7f0;color:#10263a}
+body.light .shell>main{background:#dce7f0}
 body.light h1,body.light h2,body.light .section-title h2{color:#17283a}
 body.light .term{color:#0869ad;text-shadow:none}
 body.light .term.violet{color:#6843bd}
@@ -44,12 +44,12 @@ body.light .follow{background:#fff;border-color:#b6c7d7}
 body.light .follow summary{color:#1d3043}
 body.light .follow p{color:#465d73}
 body.light .article-footer button{background:#fff;border-color:#afc2d3;color:#263b50}
-body.light .toc{background:#eef4f9;border-color:#bdccda}
+body.light .toc{background:#d5e2ec;border-color:#91a8ba}
 body.light .toc>b,body.light .toc>a{color:#536b82}
 body.light .toc>a.active{color:#075f9f;border-color:#075f9f;background:#e1edf7}
 body.light .toc>div{background:#fff;border-color:#b5c7d7}
 body.light .toc>div p{color:#52697f}
-body.light .sidebar{background:#e5eef6;border-color:#adbfce}
+body.light .sidebar{background:#cfdeea;border-color:#8fa7ba}
 body.light .main-nav a,body.light .main-nav button{color:#40576d}
 body.light .main-nav .active{background:#d3e3f0;color:#123b60;box-shadow:inset -3px 0 #1768aa}
 body.light .nav-title{color:#4d647a}
@@ -60,7 +60,7 @@ body.light .categories summary b{color:#172c40}
 body.light .categories summary small{color:#536b81}
 body.light .categories summary>i{background:#e4f0fa;color:#075f9f;border-color:#7fa5c5}
 body.light .categories summary em{color:#5d35ad}
-body.light .categories details>div{background:#edf4f9;border-color:#afc1d0}
+body.light .categories details>div{background:#e4edf4;border-color:#9cb1c2}
 body.light .categories details>div button{color:#405a72}
 body.light .categories details>div button:hover{background:#dce9f3;color:#173b5b}
 body.light .categories details>div button.active{background:#cfe1f0;color:#123b60;border-color:#729abb;box-shadow:inset -3px 0 #6843bd}
