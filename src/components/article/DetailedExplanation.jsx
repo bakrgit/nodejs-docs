@@ -1,0 +1,2 @@
+import SectionTitle from '../ui/SectionTitle'; import BilingualText from '../ui/BilingualText'
+export default function DetailedExplanation({ paragraphs, callout }) { return <section id="explanation"><SectionTitle number="02">الشرح بالتفصيل</SectionTitle>{paragraphs.map(p=><p key={p}><BilingualText>{p}</BilingualText></p>)}<aside className="callout"><strong>!</strong><div><b>النقطة اللي بتفرق <BilingualText>Senior</BilingualText></b><p><BilingualText>{callout}</BilingualText></p></div></aside></section> }

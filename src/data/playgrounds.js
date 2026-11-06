@@ -1,0 +1,103 @@
+export const playgrounds = {
+  Q001: {
+    title: 'جرّب 3 Requests في نفس الوقت',
+    description: 'المحاكاة تعليمية وتوضّح scheduling وليست benchmark حقيقيًا.',
+    labels: ['/api/products', '/api/orders', '/api/profile'],
+    engineLabel: 'Event Loop', engineHint: 'يستقبل ويوجّه الشغل', branches: [['Main Thread','JavaScript callbacks'],['OS / libuv','Network & File I/O']],
+    frames: [
+      { delay: 0, states: ['بيتنفذ...', 'في الانتظار', 'في الانتظار'] },
+      { delay: 650, states: ['✓ خلص', 'بيتنفذ...', 'بيتنفذ...'] },
+      { delay: 1450, states: ['✓ خلص', '✓ خلص', '✓ خلص'] },
+    ],
+  },
+  Q002: {
+    title: 'راقب ترتيب الـQueues',
+    description: 'محاكاة تعليمية لترتيب callbacks داخل I/O context؛ الترتيب الدقيق للـtimers قد يعتمد على runtime والسياق.',
+    labels: ['process.nextTick', 'Promise microtask', 'setImmediate'],
+    engineLabel: 'Scheduling', engineHint: 'يفرغ الـqueues حسب الأولوية', branches: [['Microtasks','nextTick & Promises'],['Event Loop','check phase']],
+    frames: [
+      { delay: 0, states: ['بيتنفذ...', 'منتظر', 'منتظر'] },
+      { delay: 650, states: ['✓ خلص', 'بيتنفذ...', 'منتظر'] },
+      { delay: 1300, states: ['✓ خلص', '✓ خلص', 'بيتنفذ...'] },
+      { delay: 1900, states: ['✓ خلص', '✓ خلص', '✓ خلص'] },
+    ],
+  },
+  Q003: {
+    title: 'شاهد تشبع الـWorker Pool',
+    description: 'المحاكاة توضح queueing فقط وليست قياسًا فعليًا لحجم pool على جهازك.',
+    labels: ['crypto task 1', 'crypto task 2', 'fs.readFile'],
+    engineLabel: 'Worker Pool', engineHint: 'threads مشتركة بصف انتظار', branches: [['Running','available workers'],['Queued','waiting work']],
+    frames: [
+      { delay: 0, states: ['بيتنفذ...', 'بيتنفذ...', 'في الانتظار'] },
+      { delay: 850, states: ['✓ خلص', 'بيتنفذ...', 'بيتنفذ...'] },
+      { delay: 1600, states: ['✓ خلص', '✓ خلص', '✓ خلص'] },
+    ],
+  },
+  ...Object.fromEntries([
+    ['Q004',['nextTick','Promise','I/O callback'],'Microtask queues','الأولوية ثم العودة للـloop'],
+    ['Q005',['setImmediate','setTimeout(0)','I/O callback'],'Timer scheduling','السياق يحدد الترتيب'],
+    ['Q006',['sync work','pending request','health check'],'Main Thread','العمل المتزامن يحجز التنفيذ'],
+    ['Q007',['job 1','job 2','job 3'],'Worker Pool','parallel CPU jobs بحد أقصى'],
+    ['Q008',['Worker Thread','Child Process','Cluster'],'Execution models','حدود isolation مختلفة'],
+    ['Q009',['parent','IPC message','child'],'Process IPC','رسائل مرتبطة بعمر العمليات'],
+    ['Q010',['Readable','Transform','Writable'],'Stream pipeline','تدفق مع backpressure'],
+  ].map(([id,labels,engineLabel,engineHint])=>[id,{title:`محاكاة ${engineLabel}`,description:'محاكاة تعليمية لتدفق الحالة وليست benchmark حقيقيًا.',labels,engineLabel,engineHint,branches:[[labels[0],'running'],[labels.at(-1),'waiting/completed']],frames:[{delay:0,states:['بيتنفذ...','في الانتظار','في الانتظار']},{delay:700,states:['✓ خلص','بيتنفذ...','في الانتظار']},{delay:1400,states:['✓ خلص','✓ خلص','✓ خلص']}] }])),
+  ...Object.fromEntries([
+    ['Q011',['Readable','buffer','Writable'],'Backpressure'],['Q012',['bytes','Buffer view','consumer'],'Binary memory'],['Q013',['New Space','Old Space','GC'],'V8 heap'],['Q014',['allocation','retained path','heap growth'],'Leak diagnosis'],['Q015',['request','hot stack','flame graph'],'CPU profile'],['Q016',['request','async boundary','context'],'Async context'],['Q017',['module','resolver','consumer'],'Module loading'],['Q018',['emit','listeners','cleanup'],'Event delivery'],['Q019',['fatal error','drain','restart'],'Failure lifecycle'],['Q020',['SIGTERM','drain','exit'],'Shutdown lifecycle'],
+  ].map(([id,labels,engineLabel])=>[id,{title:`محاكاة ${engineLabel}`,description:'توضيح تفاعلي لتتابع الحالة؛ ليست نتيجة benchmark.',labels,engineLabel,engineHint:'انتقال الحالة والضغط بين المراحل',branches:[[labels[0],'source'],[labels[2],'destination']],frames:[{delay:0,states:['بيتنفذ...','في الانتظار','في الانتظار']},{delay:650,states:['✓ خلص','بيتنفذ...','في الانتظار']},{delay:1300,states:['✓ خلص','✓ خلص','✓ خلص']}] }])),
+  ...Object.fromEntries([
+    ['Q021',['callback','Promise','await'],'Async composition'],['Q022',['call','await','continuation'],'Async continuation'],['Q023',['task A','task B','combinator'],'Promise policy'],['Q024',['queued','running','completed'],'Concurrency limit'],['Q025',['read','interleave','conditional write'],'Race prevention'],['Q026',['waiting','acquired','released'],'Synchronization'],['Q027',['running','abort signal','cleanup'],'Cancellation'],
+  ].map(([id,labels,engineLabel])=>[id,{title:`محاكاة ${engineLabel}`,description:'المحاكاة تشرح الترتيب والسياسة ولا تمثل benchmark.',labels,engineLabel,engineHint:'شاهد انتقال المهمة بين الحالات',branches:[[labels[0],'start'],[labels[2],'outcome']],frames:[{delay:0,states:['بيتنفذ...','في الانتظار','في الانتظار']},{delay:650,states:['✓ خلص','بيتنفذ...','في الانتظار']},{delay:1300,states:['✓ خلص','✓ خلص','✓ خلص']}] }])),
+  ...Object.fromEntries([
+    ['Q028',['deadline','dependency','abort'],'Deadline budget'],['Q029',['failure','backoff+jitter','retry'],'Retry policy'],['Q030',['source','yield value','consumer'],'Async iteration'],['Q031',['task','resource','cleanup'],'Task ownership'],['Q032',['cause','context','boundary'],'Error propagation'],['Q033',['request key','atomic claim','replay'],'Idempotency'],['Q034',['hot callback','loop delay','yield/worker'],'Starvation diagnosis'],
+  ].map(([id,labels,engineLabel])=>[id,{title:`محاكاة ${engineLabel}`,description:'توضيح تفاعلي للسياسة؛ الأرقام ليست benchmark.',labels,engineLabel,engineHint:'تتابع الحالة بين الطبقات',branches:[[labels[0],'input'],[labels[2],'result']],frames:[{delay:0,states:['بيتنفذ...','في الانتظار','في الانتظار']},{delay:650,states:['✓ خلص','بيتنفذ...','في الانتظار']},{delay:1300,states:['✓ خلص','✓ خلص','✓ خلص']}] }])),
+  ...Object.fromEntries([
+    ['Q035',['HTTP request','router stack','response'],'Request lifecycle'],['Q036',['middleware A','middleware B','route'],'Middleware chain'],['Q037',['handler','next(error)','error middleware'],'Error flow'],['Q038',['async handler','rejection','error boundary'],'Async errors'],['Q039',['controller','service','repository'],'Architecture boundaries'],['Q040',['raw input','validated DTO','use case'],'Validation boundary'],['Q041',['domain error','error mapper','problem response'],'API contract'],
+  ].map(([id,labels,engineLabel])=>[id,{title:`محاكاة ${engineLabel}`,description:'المحاكاة توضح مسار الطلب وليست قياس أداء.',labels,engineLabel,engineHint:'انتقال control والبيانات',branches:[[labels[0],'ingress'],[labels[2],'outcome']],frames:[{delay:0,states:['بيتنفذ...','في الانتظار','في الانتظار']},{delay:650,states:['✓ خلص','بيتنفذ...','في الانتظار']},{delay:1300,states:['✓ خلص','✓ خلص','✓ خلص']}] }])),
+  ...Object.fromEntries([
+    ['Q042',['upload stream','scan queue','private object'],'Secure uploads'],['Q043',['project fields','compress/stream','client'],'Response performance'],['Q044',['client socket','trusted proxy','Express request'],'Proxy trust'],['Q045',['identity key','atomic limiter','decision'],'Rate limiting'],['Q046',['request ID','async context','downstream'],'Context propagation'],['Q047',['principal','policy check','resource action'],'Authorization'],['Q048',['request close','abort signal','cleanup'],'Disconnect lifecycle'],['Q049',['HTTP adapter','use case','repository'],'Application boundaries'],
+  ].map(([id,labels,engineLabel])=>[id,{title:`محاكاة ${engineLabel}`,description:'توضيح تفاعلي لمسار الأمان والتشغيل؛ ليست نتيجة benchmark.',labels,engineLabel,engineHint:'تابع انتقال البيانات والقرار بين الحدود',branches:[[labels[0],'entry'],[labels[2],'outcome']],frames:[{delay:0,states:['بيتنفذ...','في الانتظار','في الانتظار']},{delay:650,states:['✓ خلص','بيتنفذ...','في الانتظار']},{delay:1300,states:['✓ خلص','✓ خلص','✓ خلص']}] }])),
+  ...Object.fromEntries([
+    ['Q050',['feature module','exported provider','consumer'],'Module graph'],['Q051',['injection token','provider factory','consumer'],'Dependency injection'],['Q052',['singleton','request scope','allocation'],'Provider scopes'],['Q053',['controller DTO','use case','domain result'],'Controller boundary'],['Q054',['middleware','guard policy','handler'],'Request gates'],['Q055',['raw input','validated DTO','command'],'Validation pipeline'],['Q056',['before handler','observable','finalize'],'Interceptor lifecycle'],
+  ].map(([id,labels,engineLabel])=>[id,{title:`محاكاة ${engineLabel}`,description:'المحاكاة توضح Nest execution أوdependency flow وليست benchmark.',labels,engineLabel,engineHint:'انتقال control والبيانات عبر Nest boundaries',branches:[[labels[0],'input'],[labels[2],'outcome']],frames:[{delay:0,states:['بيتنفذ...','في الانتظار','في الانتظار']},{delay:650,states:['✓ خلص','بيتنفذ...','في الانتظار']},{delay:1300,states:['✓ خلص','✓ خلص','✓ خلص']}] }])),
+  ...Object.fromEntries([
+    ['Q057',['domain error','exception filter','safe response'],'Error mapping'],['Q058',['input DTO','explicit mapper','output DTO'],'DTO boundaries'],['Q059',['raw environment','schema parse','typed config'],'Configuration'],['Q060',['decorator metadata','guard/context','explicit argument'],'Decorator flow'],['Q061',['readiness off','drain work','close resources'],'Shutdown lifecycle'],['Q062',['use case','transaction context','repositories'],'Persistence transaction'],['Q063',['command','durable event','read projection'],'CQRS flow'],
+  ].map(([id,labels,engineLabel])=>[id,{title:`محاكاة ${engineLabel}`,description:'توضيح تفاعلي للحدود والـlifecycle؛ ليست benchmark.',labels,engineLabel,engineHint:'راقب ownership وانتقال الحالة',branches:[[labels[0],'source'],[labels[2],'result']],frames:[{delay:0,states:['بيتنفذ...','في الانتظار','في الانتظار']},{delay:650,states:['✓ خلص','بيتنفذ...','في الانتظار']},{delay:1300,states:['✓ خلص','✓ خلص','✓ خلص']}] }])),
+  ...Object.fromEntries([
+    ['Q064',['resource URI','HTTP semantics','representation'],'REST interface'],['Q065',['request','idempotency rule','final effect'],'Method semantics'],['Q066',['domain outcome','status mapping','client behavior'],'Status mapping'],['Q067',['sort keys','opaque cursor','next page'],'Cursor pagination'],['Q068',['query params','allow-listed AST','indexed query'],'Query design'],['Q069',['bulk input','bounded workers','result/job'],'Bulk processing'],['Q070',['current resource','validated patch','new version'],'Partial update'],
+  ].map(([id,labels,engineLabel])=>[id,{title:`محاكاة ${engineLabel}`,description:'توضيح تفاعلي لـAPI semantics؛ ليست benchmark.',labels,engineLabel,engineHint:'تابعcontract والحالة عبرالطلب',branches:[[labels[0],'request'],[labels[2],'outcome']],frames:[{delay:0,states:['بيتنفذ...','في الانتظار','في الانتظار']},{delay:650,states:['✓ خلص','بيتنفذ...','في الانتظار']},{delay:1300,states:['✓ خلص','✓ خلص','✓ خلص']}] }])),
+  ...Object.fromEntries([
+    ['Q071',['ETag v5','If-Match','version v6'],'Optimistic concurrency'],['Q072',['v1 client','compatibility adapter','shared use case'],'API evolution'],['Q073',['domain error','problem mapper','safe response'],'Problem Details'],['Q074',['source contract','CI validation','docs and SDK'],'OpenAPI pipeline'],['Q075',['shape validation','domain invariant','atomic constraint'],'Validation boundaries'],['Q076',['upload session','private scan','published object'],'Large files'],['Q077',['signed event','durable inbox','idempotent handler'],'Webhook delivery'],['Q078',['consumer needs','transport choice','domain service'],'API architecture'],
+  ].map(([id,labels,engineLabel])=>[id,{title:`محاكاة ${engineLabel}`,description:'توضيح تفاعلي للـAPI contract والتشغيل؛ ليست benchmark.',labels,engineLabel,engineHint:'تابعالحالة والضمانات بينالحدود',branches:[[labels[0],'input'],[labels[2],'outcome']],frames:[{delay:0,states:['بيتنفذ...','في الانتظار','في الانتظار']},{delay:650,states:['✓ خلص','بيتنفذ...','في الانتظار']},{delay:1300,states:['✓ خلص','✓ خلص','✓ خلص']}] }])),
+  ...Object.fromEntries([
+    ['Q079',['credential','principal','resource policy'],'AuthN and AuthZ'],['Q080',['session/token','verification','principal'],'Authentication model'],['Q081',['cookie attributes','browser request','server session'],'Cookie protection'],['Q082',['refresh token','atomic rotation','new token family'],'Token rotation'],['Q083',['authorization request','code + PKCE','tokens'],'OIDC flow'],['Q084',['password','memory-hard hash','stored verifier'],'Password hashing'],['Q085',['primary login','strong factor','assured session'],'MFA flow'],
+  ].map(([id,labels,engineLabel])=>[id,{title:`محاكاة ${engineLabel}`,description:'توضيح تفاعلي لمسارالهوية والأمان؛ لايمثلنظامتشفير حقيقيًا.',labels,engineLabel,engineHint:'تابعالثقة والقرار عبرالمراحل',branches:[[labels[0],'untrusted/input'],[labels[2],'trusted/outcome']],frames:[{delay:0,states:['بيتنفذ...','في الانتظار','في الانتظار']},{delay:650,states:['✓ خلص','بيتنفذ...','في الانتظار']},{delay:1300,states:['✓ خلص','✓ خلص','✓ خلص']}] }])),
+  ...Object.fromEntries([
+    ['Q086',['login attempt','risk controls','generic result'],'Abuse defense'],['Q087',['role permissions','resource attributes','policy decision'],'Authorization policy'],['Q088',['trusted tenant','scoped query','isolated result'],'Tenant isolation'],['Q089',['object ID','object policy','authorized result'],'Object authorization'],['Q090',['untrusted origin/input','browser defenses','safe action/output'],'Web attack defense'],['Q091',['untrusted value','parameterized query','scoped result'],'Injection defense'],
+  ].map(([id,labels,engineLabel])=>[id,{title:`محاكاة ${engineLabel}`,description:'محاكاة تعليمية لمسارالقرار الأمني وليستاختباراختراق.',labels,engineLabel,engineHint:'تابعحدودالثقة والدفاعات',branches:[[labels[0],'untrusted'],[labels[2],'safe outcome']],frames:[{delay:0,states:['بيتنفذ...','في الانتظار','في الانتظار']},{delay:650,states:['✓ خلص','بيتنفذ...','في الانتظار']},{delay:1300,states:['✓ خلص','✓ خلص','✓ خلص']}] }])),
+  ...Object.fromEntries([
+    ['Q092',['browser origin','preflight policy','readable response'],'CORS policy'],['Q093',['user URL','egress validator','restricted fetch'],'SSRF defense'],['Q094',['workload identity','secret manager','short credential'],'Secret lifecycle'],['Q095',['login signals','risk controls','login decision'],'Login protection'],['Q096',['active session','server revocation','closed session'],'Session revocation'],
+  ].map(([id,labels,engineLabel])=>[id,{title:`محاكاة ${engineLabel}`,description:'محاكاة تعليمية لحدودالأمان والقرار.',labels,engineLabel,engineHint:'تابعinput حتىالنتيجة الآمنة',branches:[[labels[0],'input'],[labels[2],'outcome']],frames:[{delay:0,states:['بيتنفذ...','في الانتظار','في الانتظار']},{delay:650,states:['✓ خلص','بيتنفذ...','في الانتظار']},{delay:1300,states:['✓ خلص','✓ خلص','✓ خلص']}] }])),
+  ...Object.fromEntries([
+    ['Q097',['Database','Collection','BSON Document'],'MongoDB organization'],
+    ['Q098',['Parent document','Embedded data / reference','Read result'],'Embedding decision'],
+    ['Q099',['Compatible reader','Incremental backfill','Contract cleanup'],'Schema evolution'],
+    ['Q100',['Access pattern','Document shape','Indexed query'],'Workload-driven design'],
+    ['Q101',['Mutable product','Order snapshot','Stable invoice'],'ERP order model'],
+    ['Q102',['Trusted tenant','Scoped repository','Isolated result'],'Tenant isolation'],
+    ['Q103',['Technical ID','Business key scope','Unique constraint'],'Identifier design'],
+  ].map(([id,labels,engineLabel])=>[id,{title:`محاكاة ${engineLabel}`,description:'محاكاة تعليمية تشرح قرار تصميم البيانات، وليست نتيجة قياس أداء.',labels,engineLabel,engineHint:'تابع البيانات من المتطلب إلى الضمان النهائي',branches:[[labels[0],'input'],[labels[2],'guarantee']],frames:[{delay:0,states:['بيتنفذ...','في الانتظار','في الانتظار']},{delay:650,states:['✓ خلص','بيتنفذ...','في الانتظار']},{delay:1300,states:['✓ خلص','✓ خلص','✓ خلص']}] }])),
+  ...Object.fromEntries([
+    ['Q104',['Collection scan','Single-field index','Indexed result'],'Single-field index'],
+    ['Q105',['Filter and sort','Ordered compound keys','Fast result'],'Compound index'],
+    ['Q106',['Business rule','Filtered unique keys','Protected write'],'Index constraints'],
+    ['Q107',['Array values','Multikey entries','Matched document'],'Multikey index'],
+  ].map(([id,labels,engineLabel])=>[id,{title:`محاكاة ${engineLabel}`,description:'محاكاة تعليمية لمسار الاستعلام داخل الفهرس.',labels,engineLabel,engineHint:'شاهد كيف يقل عدد الوثائق المفحوصة',branches:[[labels[0],'without index'],[labels[2],'with index']],frames:[{delay:0,states:['بيتنفذ...','في الانتظار','في الانتظار']},{delay:650,states:['✓ تم التحليل','بيتنفذ...','في الانتظار']},{delay:1300,states:['✓ تم التحليل','✓ استخدم الفهرس','✓ ظهرت النتيجة']}] }])),
+  ...Object.fromEntries([
+    ['Q108','Search choice'],['Q109','Aggregation pipeline'],['Q110','Lookup join'],['Q111','Reporting aggregation'],['Q112','Projection path'],['Q113','Populate vs aggregate'],['Q114','Lean hydration'],['Q115','Change stream'],['Q116','TTL lifecycle'],['Q117','Explain plan'],['Q118','Covered query'],['Q119','Index cost'],['Q120','Transaction'],['Q121','Transaction retry'],['Q122','Atomic update'],['Q123','Optimistic concurrency'],['Q124','Inventory reservation'],['Q125','Read and write concern'],['Q126','Replica set'],['Q127','Consistency path'],['Q128','Sharding route'],['Q129','Shard key'],['Q130','Hotspot'],['Q131','Connection pool'],['Q132','Bulk write'],['Q133','Slow query diagnosis'],['Q134','Disaster recovery'],
+  ].map(([id,engineLabel])=>[id,{title:`محاكاة ${engineLabel}`,description:'محاكاة تعليمية تشرح انتقال البيانات والقرار تحت ظروف الإنتاج.',labels:['Input / workload','MongoDB decision','Measured outcome'],engineLabel,engineHint:'شاهد القرار والنتيجة بدل حفظ المصطلح',branches:[['Input / workload','evidence'],['Measured outcome','verified result']],frames:[{delay:0,states:['بيتنفذ...','في الانتظار','في الانتظار']},{delay:650,states:['✓ تم القياس','بيتنفذ...','في الانتظار']},{delay:1300,states:['✓ تم القياس','✓ تم القرار','✓ ظهرت النتيجة']}] }])),
+  ...Object.fromEntries(Array.from({length:18},(_,index)=>{const id=`Q${135+index}`;return [id,{title:'محاكاة PostgreSQL',description:'محاكاة تعليمية من المتطلب إلى خطة التنفيذ والنتيجة.',labels:['SQL workload','Planner / transaction','Verified result'],engineLabel:'PostgreSQL Engine',engineHint:'تابع الخطة والضمان',branches:[['SQL workload','input'],['Verified result','measured']],frames:[{delay:0,states:['بيتنفذ...','في الانتظار','في الانتظار']},{delay:650,states:['✓ تم التحليل','بيتنفذ...','في الانتظار']},{delay:1300,states:['✓ تم التحليل','✓ نُفذت الخطة','✓ تم التحقق']}] }]})),
+  ...Object.fromEntries(Array.from({length:32},(_,index)=>{const n=153+index;const id=`Q${n}`;const engineLabel=n<=162?'Redis state':n<=174?'Queue delivery':'Realtime connection';return [id,{title:`محاكاة ${engineLabel}`,description:'محاكاة تعليمية توضح انتقال الحالة والفشل والتعافي.',labels:['Producer / request','Shared engine','Consumer / result'],engineLabel,engineHint:'تابع الحالة والضمان بين الأطراف',branches:[['Producer / request','input'],['Consumer / result','outcome']],frames:[{delay:0,states:['بيتنفذ...','في الانتظار','في الانتظار']},{delay:650,states:['✓ تم الإرسال','بيتنفذ...','في الانتظار']},{delay:1300,states:['✓ تم الإرسال','✓ تم التنسيق','✓ وصلت النتيجة']}] }]})),
+  ...Object.fromEntries(Array.from({length:24},(_,index)=>{const n=185+index;const id=`Q${n}`;const engineLabel=n<=196?'Test confidence':'Observability signal';return [id,{title:`محاكاة ${engineLabel}`,description:'محاكاة تعليمية تحول المدخل إلى دليل وقرار يمكن التحقق منه.',labels:['System behavior','Evidence collection','Decision / confidence'],engineLabel,engineHint:'تابع الدليل بدل التخمين',branches:[['System behavior','input'],['Decision / confidence','outcome']],frames:[{delay:0,states:['بيتنفذ...','في الانتظار','في الانتظار']},{delay:650,states:['✓ ظهر السلوك','بيتنفذ...','في الانتظار']},{delay:1300,states:['✓ ظهر السلوك','✓ جُمعت الأدلة','✓ اتُخذ القرار']}] }]})),
+  ...Object.fromEntries(Array.from({length:42},(_,index)=>{const n=209+index;const id=`Q${n}`;const engineLabel=n<=218?'Deployment lifecycle':'System design flow';return [id,{title:`محاكاة ${engineLabel}`,description:'محاكاة تعليمية تربط المتطلب بالقرار والفشل والتعافي.',labels:['Requirements / traffic','Architecture decision','Reliable outcome'],engineLabel,engineHint:'تابع السبب والـtrade-off والنتيجة',branches:[['Requirements / traffic','input'],['Reliable outcome','verified']],frames:[{delay:0,states:['بيتنفذ...','في الانتظار','في الانتظار']},{delay:650,states:['✓ اتحددت المتطلبات','بيتنفذ...','في الانتظار']},{delay:1300,states:['✓ اتحددت المتطلبات','✓ اتاخد القرار','✓ اتراجع التعافي']}] }]})),
+}

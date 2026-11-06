@@ -1,0 +1,2 @@
+import SectionTitle from '../ui/SectionTitle'; import BilingualText from '../ui/BilingualText'
+export default function InterviewAnswers({ arabic, english }) { return <section id="answers" className="answers"><SectionTitle number="07">إجابة الإنترفيو</SectionTitle><div><article className="arabic-answer"><b>بالعربي</b><p><BilingualText>{arabic}</BilingualText></p></article><article className="english-answer" dir="ltr"><b>IN ENGLISH</b><p>{english}</p></article></div></section> }
